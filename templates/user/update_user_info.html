@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}个人资料{% endblock %}
+{% block css %}{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 offset-4">
+                <div class="card shadow">
+                    {% if user.is_authenticated %}
+                        <div class="card-header"><h2 class="text-center">{{ user.username }}的用户资料</h2></div>
+                        <div class="card-body">
+                            <form action="" method="POST">
+                                <ul style="list-style-type: none;padding-left: 0;">
+                                    <li>新的号码：{{ user_profile_form.phone }}</li>
+                                    <li>新的签名：{{ user_profile_form.bio }}</li>
+                                </ul>
+                                <button type="submit" class="btn btn-outline-primary">提交</button>
+                                <a href="{% url 'user_info' %}"><button 
+                                        type="button" class="btn btn-outline-primary">返回</button></a>
+                            </form>
+                        </div>
+                    {% else %}
+                        <span><p>暂未登录，请先<a href="{% url 'login' %}">登录</a></p></span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

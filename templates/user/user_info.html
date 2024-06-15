@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}个人资料{% endblock %}
+{% block css %}{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 offset-4">
+                <div class="card shadow">
+                    {% if user.is_authenticated %}
+                        <div class="card-header"><h2 class="text-center">{{ user.username }}的用户资料</h2></div>
+                        <div class="card-body">
+                            <ul style="list-style-type: none;padding-left: 0">
+                                <li class="text-center">{% if user.profile.avatar.url %}
+                                    <img src="{{ user.profile.avatar.url }}" style="max-width: 30%;
+                                     border-radius: 100%;" alt="#">
+                                {% else %}
+                                    <h5 class="col-md-4">暂无头像</h5>
+                                {% endif %}</li>
+                                <li>昵称：{{ user.get_nickname }}
+                                    <a href="{% url 'change_nickname' %}?from={{ request.get_full_path }}">修改昵称</a>
+                                </li>
+                                <li>邮箱：{% if user.email %}
+                                    {{ user.email }}
+                                {% else %}
+                                    未绑定邮箱 <a href="{% url 'bind_email' %}?from={{ request.get_full_path }}">
+                                        点击绑定</a>
+                                {% endif %}
+                                </li>
+                                <li>号码：{{ user.profile.phone }}</li>
+                                <li><a href="{% url 'change_password' %}">修改密码</a></li>
+                                <li>签名：{{ user.profile.bio|safe }}</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer text-end">
+                            <a href="{% url 'update_user_info' %}?from={{ request.get_full_path }}">
+                                <button
+                                        class="btn btn-outline-secondary">修改资料
+                                </button>
+                            </a>
+                        </div>
+                    {% else %}
+                        <span><p>暂未登录，请先<a href="{% url 'login' %}">登录</a></p></span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

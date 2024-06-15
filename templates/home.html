@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    我的网站|首页
+{% endblock %}
+
+{% block content %}
+    <div class="text-center text-success fs-2">欢迎访问我的网站</div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 text-center text-success fs-6">
+                <div>
+                    <h5>昨日热门博客</h5>
+                    <ul style="list-style-type: none">
+                        {% for hot_blog in  yesterday_hot_data %}
+                            <li>
+                                <a href="{% url 'blog_details' hot_blog.content_object.pk %}">
+                                    {{ hot_blog.content_object.title }}
+                                </a>(浏览次数：{{ hot_blog.read_num }})
+                            </li>
+                        {% empty %}
+                            <li><p>暂无内容</p></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="text-center">
+                    <h5>7天热门博客</h5>
+                    <ul style="list-style-type: none">
+                        {% for hot_blog in  hot_7_days_blogs %}
+                            <li>
+                                <a href="{% url 'blog_details' hot_blog.id %}">
+                                    {{ hot_blog.title }}
+                                </a>(浏览次数：{{ hot_blog.read_num_sum }})
+                            </li>
+                        {% empty %}
+                            <li><p>暂无内容</p></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body" id="main" style="width: 800px;height:500px;"></div>
+            <div class="col-md-2 text-center text-success fs-6">
+                <h5>今日热门博客</h5>
+                <ul style="list-style-type: none">
+                    {% for hot_blog in  today_hot_data %}
+                        <li>
+                            <a href="{% url 'blog_details' hot_blog.content_object.pk %}">
+                                {{ hot_blog.content_object.title }}
+                            </a>(浏览次数：{{ hot_blog.read_num }})
+                        </li>
+                    {% empty %}
+                        <li><p>暂无内容</p></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var chartDom = document.getElementById('main');
+        var myChart = echarts.init(chartDom, '');
+        // 指定图表的配置项和数据
+        option = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                },
+                formatter: '日期: {b}<br/>数量: {c}', //{a}（系列名称），{b}（数据项名称），{c}（数值）, {d}（百分比）
+                backgroundColor: '#fff', // 悬浮框背景色
+                borderColor: '#07e7c5', // 悬浮框边框颜色
+                borderWidth: 2, // 悬浮框边框宽度
+                textStyle: { // 悬浮框文字样式
+                    color: 'rgba(0,0,0,0.98)',
+                    fontSize: 12
+                }
+            },
+            xAxis: {
+                name: '日期',
+                data: {{ dates|safe }}
+            },
+            yAxis: {
+                name: '访问量',
+            },
+            series: [
+                {
+                    data: {{ read_nums }},
+                    type: 'line',
+                    smooth: true
+                }
+            ]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    </script>
+{% endblock %}
